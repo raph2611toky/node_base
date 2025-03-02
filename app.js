@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
+const path = require('path');
 const cors = require('cors');
 
 const mongoSanitize = require('express-mongo-sanitize');
@@ -21,6 +22,8 @@ app.use(mongoSanitize());
 
 // Routes
 app.use('/api/users', require('./routes/userRoutes'));
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Gestion des erreurs avec mon Handler personalisé
 app.use(require('./middlewares/errorHandler'));

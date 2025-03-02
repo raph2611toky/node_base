@@ -4,6 +4,7 @@ const User = require('../models/User');
 
 const register = async (req, res) => {
     try {
+        if (req.file) req.body.profile = req.file.filename;
         const user = await User.create(req.body);
         res.status(201).json({ message: 'Utilisateur créé', user });
     } catch (error) {
@@ -27,4 +28,39 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { register, login };
+const profile = async (req, res) => {
+    try {
+        const user = req.user;
+        res.status(201).json({ message: 'Profile de l\'utilisateur', user });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+const updateUser = async (req, res) => {
+    try {
+        const user = req.user;
+        const { name, email, sexe, contact, adresse } = req.body;
+
+        if (req.file) {
+            if (user.profile !== 'default.png') {
+                const oldPath = path.join(__dirname, '..', 'uploads', 'profiles', user.profile);
+                if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+            }
+            user.profile = req.file.filename;
+        }
+
+        user.name = name ?? user.name;
+        user.email = email ?? user.email;
+        user.sexe = sexe ?? user.sexe;
+        user.contact = contact ?? user.contact;
+        user.adresse = adresse ?? user.adresse;
+        await user.save();
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { register, login, profile, updateUser };
