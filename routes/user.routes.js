@@ -1,9 +1,9 @@
 const express = require('express');
 const multer = require('multer');
 
-const validateUser = require('../validators/userValidator');
-const authMiddleware = require('../middlewares/authMiddleware');
-const { register, login, profile, updateUser  } = require('../controllers/userController');
+const validateUser = require('../validators/user.validator');
+const authMiddleware = require('../middlewares/auth.middleware');
+const { register, login, profile, updateUser  } = require('../controllers/user.controller');
 
 const router = express.Router();
 
